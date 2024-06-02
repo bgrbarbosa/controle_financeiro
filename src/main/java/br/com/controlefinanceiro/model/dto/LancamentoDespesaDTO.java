@@ -7,6 +7,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 @Data
 @AllArgsConstructor
@@ -15,7 +16,7 @@ public class LancamentoDespesaDTO {
 
     private Long id_lancamento;
     private String desc_lancamento;
-    private LocalDateTime dt_venc;
+    private LocalDate dt_venc;
     private Status status;
     private Double vl_lanc;
     private Despesa despesa;

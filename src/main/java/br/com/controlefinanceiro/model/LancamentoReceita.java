@@ -5,6 +5,8 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Entity
@@ -22,7 +24,7 @@ public class LancamentoReceita {
     private String desc_lancamento;
 
     @Column
-    private LocalDateTime dt_venc;
+    private LocalDate dt_venc;
 
     @Column
     @Enumerated(EnumType.STRING)

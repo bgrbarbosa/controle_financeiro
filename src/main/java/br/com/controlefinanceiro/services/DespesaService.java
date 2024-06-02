@@ -70,13 +70,13 @@ public class DespesaService {
         }
     }
 
-    private Despesa toEntity(DespesaDTO dto){
+    public Despesa toEntity(DespesaDTO dto){
         var entity = new Despesa();
         BeanUtils.copyProperties(dto, entity);
         return entity;
     }
 
-    private DespesaDTO toDTO(Despesa entity){
+    public DespesaDTO toDTO(Despesa entity){
         var dto = new DespesaDTO();
         BeanUtils.copyProperties(entity, dto);
         return dto;

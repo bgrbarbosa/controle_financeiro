@@ -1,0 +1,12 @@
+insert into tb_despesa (desc_despesa) values ('Conta de Luz')
+insert into tb_despesa (desc_despesa) values ('Conta de Água')
+insert into tb_despesa (desc_despesa) values ('Conta de IPTU')
+insert into tb_despesa (desc_despesa) values ('Conta de Aluguel')
+insert into tb_despesa (desc_despesa) values ('Conta de Internet')
+insert into tb_despesa (desc_despesa) values ('Conta de Condomínio')
+insert into tb_despesa (desc_despesa) values ('Conta de Cartão de Crédito')
+
+insert into tb_receita (desc_receita) values ('Salário Mensal')
+insert into tb_receita (desc_receita) values ('Horas Extras')
+insert into tb_receita (desc_receita) values ('Aluguel de casa')
+insert into tb_receita (desc_receita) values ('Ações da Bolsa')

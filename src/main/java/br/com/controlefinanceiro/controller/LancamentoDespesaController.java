@@ -1,16 +1,19 @@
 package br.com.controlefinanceiro.controller;
 
+import br.com.controlefinanceiro.model.LancamentoDespesa;
 import br.com.controlefinanceiro.model.dto.DespesaDTO;
 import br.com.controlefinanceiro.model.dto.LancamentoDespesaDTO;
 import br.com.controlefinanceiro.services.DespesaService;
 import br.com.controlefinanceiro.services.LancamentoDespesaService;
 import jakarta.transaction.Transactional;
+import jakarta.websocket.server.PathParam;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
+import java.time.LocalDate;
 import java.util.List;
 
 @RestController
@@ -20,8 +23,10 @@ public class LancamentoDespesaController {
     @Autowired
     private LancamentoDespesaService service;
 
+    @Autowired
+    private DespesaService despesaService;
+
     @GetMapping
-    @Transactional
     public ResponseEntity<Object> findAll() {
         List<LancamentoDespesaDTO> list = service.findAll();
         return ResponseEntity.ok().body(list);
@@ -33,12 +38,42 @@ public class LancamentoDespesaController {
         return ResponseEntity.ok().body(dto);
     }
 
+    @GetMapping(value = "/date")
+    public ResponseEntity<Object> findByDate(@PathParam("date") LocalDate date) {
+        List<LancamentoDespesaDTO> list = service.findByDate(date);
+        return ResponseEntity.ok().body(list);
+    }
+
+    @GetMapping(value = "/period")
+    public ResponseEntity<Object> findByPeriod(
+            @PathParam("date") LocalDate dt_init,
+            @PathParam("date") LocalDate dt_final) {
+        List<LancamentoDespesaDTO> list = service.findByPeriod(dt_init, dt_final);
+        return ResponseEntity.ok().body(list);
+    }
+
+    @GetMapping(value = "/total")
+    public ResponseEntity<Object> findByTotal(
+            @PathParam("date") LocalDate dt_init,
+            @PathParam("date") LocalDate dt_final) {
+        return ResponseEntity.ok().body(service.findByTotal(dt_init, dt_final));
+    }
+
+    @GetMapping(value = "/status")
+    public ResponseEntity<Object> findByStatus(
+            @PathParam("status") String status,
+            @PathParam("date") LocalDate dt_init,
+            @PathParam("date") LocalDate dt_final) {
+        return ResponseEntity.ok().body(service.findByStatus(dt_init, dt_final, status));
+    }
+
     @PostMapping
     public ResponseEntity<Object>insert(@RequestBody LancamentoDespesaDTO dto){
         LancamentoDespesaDTO result = service.insert(dto);
+        LancamentoDespesaDTO aux = service.findById(result.getId_lancamento());
         URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
-                .buildAndExpand(dto.getId_lancamento()).toUri();
-        return ResponseEntity.created(uri).body(result);
+                .buildAndExpand(aux.getId_lancamento()).toUri();
+        return ResponseEntity.created(uri).body(aux);
     }
 
     @PutMapping
