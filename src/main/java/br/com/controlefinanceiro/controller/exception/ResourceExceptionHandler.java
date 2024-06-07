@@ -11,6 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
+import java.sql.SQLIntegrityConstraintViolationException;
 import java.time.Instant;
 
 @ControllerAdvice
@@ -60,6 +61,18 @@ public class ResourceExceptionHandler {
 		err.setStatus(status.value());
 		err.setError("Failed to retrieve record");
 		err.setMessage(e.getMessage());
+		err.setPath(request.getRequestURI());
+		return ResponseEntity.status(status).body(err);
+	}
+
+	@ExceptionHandler(SQLIntegrityConstraintViolationException.class)
+	public ResponseEntity<StandardError> handleIntegrityConstraintViolationException(Exception  e, HttpServletRequest request) {
+		HttpStatus status = HttpStatus.BAD_REQUEST;
+		StandardError err = new StandardError();
+		err.setTimestamp(Instant.now());
+		err.setStatus(status.value());
+		err.setError("Integrity Constraint Violation");
+		err.setMessage("This record is being used in another table");
 		err.setPath(request.getRequestURI());
 		return ResponseEntity.status(status).body(err);
 	}

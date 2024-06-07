@@ -7,6 +7,7 @@ import br.com.controlefinanceiro.repository.DespesaRepository;
 import br.com.controlefinanceiro.repository.LancamentoDespesaRepository;
 import br.com.controlefinanceiro.services.exception.DatabaseException;
 import br.com.controlefinanceiro.services.exception.ResourceNotFoundException;
+import br.com.controlefinanceiro.services.exception.handleIntegrityConstraintViolationException;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -127,8 +128,8 @@ public class LancamentoDespesaService {
         try {
             repository.deleteById(id);
         }
-        catch (DataIntegrityViolationException e) {
-            throw new DatabaseException("Integrity Violation");
+        catch (handleIntegrityConstraintViolationException e) {
+            throw new handleIntegrityConstraintViolationException("Integrity Violation");
         }
     }
 
