@@ -2,6 +2,7 @@ package br.com.controlefinanceiro.controller;
 
 import br.com.controlefinanceiro.model.dto.ReceitaDTO;
 import br.com.controlefinanceiro.services.ReceitaService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -30,7 +31,7 @@ public class ReceitaController {
     }
 
     @PostMapping
-    public ResponseEntity<Object>insert(@RequestBody ReceitaDTO dto){
+    public ResponseEntity<Object>insert(@Valid @RequestBody ReceitaDTO dto){
         ReceitaDTO result = service.insert(dto);
         URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
                 .buildAndExpand(dto.getId_receita()).toUri();
@@ -38,7 +39,7 @@ public class ReceitaController {
     }
 
     @PutMapping
-    public ResponseEntity<ReceitaDTO> update(@RequestBody ReceitaDTO dto) {
+    public ResponseEntity<ReceitaDTO> update(@Valid @RequestBody ReceitaDTO dto) {
         dto = service.update(dto.getId_receita(), dto);
         return ResponseEntity.ok().body(dto);
     }

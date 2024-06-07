@@ -6,6 +6,7 @@ import br.com.controlefinanceiro.model.dto.LancamentoDespesaDTO;
 import br.com.controlefinanceiro.services.DespesaService;
 import br.com.controlefinanceiro.services.LancamentoDespesaService;
 import jakarta.transaction.Transactional;
+import jakarta.validation.Valid;
 import jakarta.websocket.server.PathParam;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -68,7 +69,7 @@ public class LancamentoDespesaController {
     }
 
     @PostMapping
-    public ResponseEntity<Object>insert(@RequestBody LancamentoDespesaDTO dto){
+    public ResponseEntity<Object>insert(@Valid @RequestBody LancamentoDespesaDTO dto){
         LancamentoDespesaDTO result = service.insert(dto);
         LancamentoDespesaDTO aux = service.findById(result.getId_lancamento());
         URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
@@ -77,7 +78,7 @@ public class LancamentoDespesaController {
     }
 
     @PutMapping
-    public ResponseEntity<LancamentoDespesaDTO> update(@RequestBody LancamentoDespesaDTO dto) {
+    public ResponseEntity<LancamentoDespesaDTO>update(@Valid @RequestBody LancamentoDespesaDTO dto) {
         dto = service.update(dto.getId_lancamento(), dto);
         return ResponseEntity.ok().body(dto);
     }
