@@ -1,24 +1,30 @@
 package br.com.controlefinanceiro.controller;
 
-import br.com.controlefinanceiro.model.LancamentoDespesa;
-import br.com.controlefinanceiro.model.dto.DespesaDTO;
 import br.com.controlefinanceiro.model.dto.LancamentoDespesaDTO;
 import br.com.controlefinanceiro.services.DespesaService;
+import br.com.controlefinanceiro.services.JasperServiceLancamentoDespesa;
 import br.com.controlefinanceiro.services.LancamentoDespesaService;
-import jakarta.transaction.Transactional;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import jakarta.websocket.server.PathParam;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import java.io.IOException;
 import java.net.URI;
+import java.sql.Date;
 import java.time.LocalDate;
 import java.util.List;
 
 @RestController
+@RequiredArgsConstructor
 @RequestMapping(value = "/lancamento/despesa")
+@Slf4j
 public class LancamentoDespesaController {
 
     @Autowired
@@ -26,6 +32,9 @@ public class LancamentoDespesaController {
 
     @Autowired
     private DespesaService despesaService;
+
+    @Autowired
+    private JasperServiceLancamentoDespesa jasperService;
 
     @GetMapping
     public ResponseEntity<Object> findAll() {
@@ -87,5 +96,39 @@ public class LancamentoDespesaController {
     public ResponseEntity<Void> delete(@PathVariable Long id) {
         service.delete(id);
         return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping("/relatorio/status")
+    public ResponseEntity<Void> getRelatorioStatus(
+            HttpServletResponse response,
+            @PathParam("dt_init") Date dt_init,
+            @PathParam("dt_final") Date dt_final,
+            @PathParam("status") String status) throws IOException {
+        jasperService.addParams("dt_init", dt_init);
+        jasperService.addParams("dt_final", dt_final);
+        jasperService.addParams("status", status);
+        byte[] bytes = jasperService.gerarPdfStatus();
+
+        response.setContentType(MediaType.APPLICATION_PDF_VALUE);
+        response.setHeader("Content-disposition", "inline; filename=" + System.currentTimeMillis() + ".pdf");
+        response.getOutputStream().write(bytes);
+
+        return ResponseEntity.ok().build();
+    }
+
+    @GetMapping("/relatorio/periodo")
+    public ResponseEntity<Void> gerarPdfPeriodo(
+            HttpServletResponse response,
+            @PathParam("dt_init") Date dt_init,
+            @PathParam("dt_final") Date dt_final) throws IOException {
+        jasperService.addParams("dt_init", dt_init);
+        jasperService.addParams("dt_final", dt_final);
+        byte[] bytes = jasperService.gerarPdfPeriodo();
+
+        response.setContentType(MediaType.APPLICATION_PDF_VALUE);
+        response.setHeader("Content-disposition", "inline; filename=" + System.currentTimeMillis() + ".pdf");
+        response.getOutputStream().write(bytes);
+
+        return ResponseEntity.ok().build();
     }
 }
